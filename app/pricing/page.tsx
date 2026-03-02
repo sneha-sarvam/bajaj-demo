@@ -4,14 +4,66 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
-const STT_RATE_PER_MIN = 0.5;       // ₹0.50 per minute (₹30/hour)
-const TRANSLATE_RATE_PER_CHAR = 0.002; // ₹0.002 per character (₹20/10K chars)
-
+const STT_RATE_PER_MIN = 0.5;
+const TRANSLATE_RATE_PER_CHAR = 0.002;
 const QUICK_ROWS = [1, 5, 10, 30, 60];
 
 function formatINR(value: number): string {
   if (value < 1) return `₹${value.toFixed(2)}`;
   return `₹${value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function clamp(val: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, val));
+}
+
+interface SliderWithInputProps {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step?: number;
+  unit: string;
+  onChange: (v: number) => void;
+}
+
+function SliderWithInput({ label, value, min, max, step = 1, unit, onChange }: SliderWithInputProps) {
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <label className="text-sm font-medium text-gray-700">{label}</label>
+        <div className="flex items-center gap-1.5">
+          <input
+            type="number"
+            min={min}
+            max={max}
+            step={step}
+            value={value}
+            onChange={(e) => {
+              const raw = e.target.value;
+              if (raw === '') return;
+              onChange(clamp(Number(raw), min, max));
+            }}
+            className="w-[72px] text-right text-sm font-semibold text-[#4c6ef5] bg-gray-50 border border-gray-200 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[#4c6ef5] focus:border-[#4c6ef5] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          />
+          <span className="text-xs text-gray-400 w-8">{unit}</span>
+        </div>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#4c6ef5]"
+      />
+      <div className="flex justify-between text-[11px] text-gray-400 mt-1">
+        <span>{min} {unit}</span>
+        <span>{max} {unit}</span>
+      </div>
+    </div>
+  );
 }
 
 export default function PricingPage() {
@@ -40,7 +92,6 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-svh bg-[#fafbfc]">
-      {/* Hero */}
       <section className="max-w-4xl mx-auto px-6 pt-16 pb-10 text-center">
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
@@ -53,7 +104,7 @@ export default function PricingPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-lg text-gray-500 max-w-xl mx-auto"
+          className="text-base text-gray-500 max-w-xl mx-auto"
         >
           Estimate your costs for real-time STT + translation using Sarvam AI APIs.
         </motion.p>
@@ -74,20 +125,14 @@ export default function PricingPage() {
       <section className="max-w-4xl mx-auto px-6 pb-10">
         <div className="grid md:grid-cols-2 gap-4">
           <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-lg">🎙️</span>
-              <h3 className="text-sm font-semibold text-gray-900">Speech-to-Text</h3>
-            </div>
-            <p className="text-2xl font-bold text-gray-900">₹30<span className="text-sm font-normal text-gray-400">/hour</span></p>
-            <p className="text-xs text-gray-500 mt-1">₹0.50/min, charged per second, rounded up</p>
+            <h3 className="text-sm font-semibold text-gray-900 mb-1">Speech-to-Text</h3>
+            <p className="text-2xl font-bold text-gray-900">₹30<span className="text-sm font-normal text-gray-400"> /hour</span></p>
+            <p className="text-xs text-gray-500 mt-1">₹0.50/min, charged per second</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-lg">🌐</span>
-              <h3 className="text-sm font-semibold text-gray-900">Translation (Mayura v1)</h3>
-            </div>
-            <p className="text-2xl font-bold text-gray-900">₹20<span className="text-sm font-normal text-gray-400">/10K chars</span></p>
-            <p className="text-xs text-gray-500 mt-1">₹0.002/character, charged per character</p>
+            <h3 className="text-sm font-semibold text-gray-900 mb-1">Translation (Mayura v1)</h3>
+            <p className="text-2xl font-bold text-gray-900">₹20<span className="text-sm font-normal text-gray-400"> /10K chars</span></p>
+            <p className="text-xs text-gray-500 mt-1">₹0.002/character</p>
           </div>
         </div>
       </section>
@@ -98,102 +143,55 @@ export default function PricingPage() {
           <h2 className="text-lg font-semibold text-gray-900 mb-6">Cost Calculator</h2>
 
           <div className="grid md:grid-cols-2 gap-x-10 gap-y-6">
-            {/* Input: Minutes */}
-            <div>
-              <div className="flex justify-between mb-2">
-                <label className="text-sm font-medium text-gray-700">Audio Duration</label>
-                <span className="text-sm font-semibold text-[#4c6ef5]">{minutes} min</span>
-              </div>
-              <input
-                type="range"
-                min={1}
-                max={60}
-                value={minutes}
-                onChange={(e) => setMinutes(Number(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#4c6ef5]"
-              />
-              <div className="flex justify-between text-xs text-gray-400 mt-1">
-                <span>1 min</span>
-                <span>60 min</span>
-              </div>
-            </div>
-
-            {/* Input: Languages */}
-            <div>
-              <div className="flex justify-between mb-2">
-                <label className="text-sm font-medium text-gray-700">Target Languages</label>
-                <span className="text-sm font-semibold text-[#4c6ef5]">{languages}</span>
-              </div>
-              <input
-                type="range"
-                min={1}
-                max={11}
-                value={languages}
-                onChange={(e) => setLanguages(Number(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#4c6ef5]"
-              />
-              <div className="flex justify-between text-xs text-gray-400 mt-1">
-                <span>1 lang</span>
-                <span>11 langs</span>
-              </div>
-            </div>
-
-            {/* Input: Chars per chunk */}
-            <div>
-              <div className="flex justify-between mb-2">
-                <label className="text-sm font-medium text-gray-700">Avg Characters per Chunk</label>
-                <span className="text-sm font-semibold text-[#4c6ef5]">{charsPerChunk}</span>
-              </div>
-              <input
-                type="range"
-                min={50}
-                max={500}
-                step={10}
-                value={charsPerChunk}
-                onChange={(e) => setCharsPerChunk(Number(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#4c6ef5]"
-              />
-              <div className="flex justify-between text-xs text-gray-400 mt-1">
-                <span>50 chars</span>
-                <span>500 chars</span>
-              </div>
-            </div>
-
-            {/* Input: Chunks per minute */}
-            <div>
-              <div className="flex justify-between mb-2">
-                <label className="text-sm font-medium text-gray-700">Chunks per Minute</label>
-                <span className="text-sm font-semibold text-[#4c6ef5]">{chunksPerMin}</span>
-              </div>
-              <input
-                type="range"
-                min={1}
-                max={12}
-                value={chunksPerMin}
-                onChange={(e) => setChunksPerMin(Number(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#4c6ef5]"
-              />
-              <div className="flex justify-between text-xs text-gray-400 mt-1">
-                <span>1/min</span>
-                <span>12/min</span>
-              </div>
-            </div>
+            <SliderWithInput
+              label="Audio Duration"
+              value={minutes}
+              min={1}
+              max={120}
+              unit="min"
+              onChange={setMinutes}
+            />
+            <SliderWithInput
+              label="Target Languages"
+              value={languages}
+              min={1}
+              max={11}
+              unit=""
+              onChange={setLanguages}
+            />
+            <SliderWithInput
+              label="Avg Characters per Chunk"
+              value={charsPerChunk}
+              min={10}
+              max={1000}
+              step={10}
+              unit="chars"
+              onChange={setCharsPerChunk}
+            />
+            <SliderWithInput
+              label="Chunks per Minute"
+              value={chunksPerMin}
+              min={1}
+              max={20}
+              unit="/min"
+              onChange={setChunksPerMin}
+            />
           </div>
 
           {/* Results */}
           <div className="mt-8 pt-6 border-t border-gray-100">
             <div className="grid grid-cols-3 gap-4">
-              <div className="rounded-xl bg-blue-50 p-4 text-center">
+              <div className="rounded-xl bg-gray-50 border border-gray-100 p-4 text-center">
                 <p className="text-xs text-gray-500 mb-1">STT Cost</p>
                 <p className="text-lg font-bold text-gray-900">{formatINR(calc.sttCost)}</p>
                 <p className="text-[10px] text-gray-400 mt-1">{minutes} min &times; ₹0.50</p>
               </div>
-              <div className="rounded-xl bg-purple-50 p-4 text-center">
+              <div className="rounded-xl bg-gray-50 border border-gray-100 p-4 text-center">
                 <p className="text-xs text-gray-500 mb-1">Translation Cost</p>
                 <p className="text-lg font-bold text-gray-900">{formatINR(calc.translateCost)}</p>
                 <p className="text-[10px] text-gray-400 mt-1">{calc.totalChars.toLocaleString('en-IN')} chars</p>
               </div>
-              <div className="rounded-xl bg-[#f0f4ff] p-4 text-center">
+              <div className="rounded-xl bg-[#f0f4ff] border border-[#e0e8ff] p-4 text-center">
                 <p className="text-xs text-[#4263eb] font-medium mb-1">Total Cost</p>
                 <p className="text-xl font-bold text-[#4c6ef5]">{formatINR(calc.totalCost)}</p>
                 <p className="text-[10px] text-gray-400 mt-1">{calc.totalChunks} chunks &times; {languages} langs</p>
@@ -208,7 +206,7 @@ export default function PricingPage() {
         <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Reference</h2>
           <p className="text-xs text-gray-500 mb-4">
-            Based on your settings: {languages} languages, ~{charsPerChunk} chars/chunk, ~{chunksPerMin} chunks/min
+            Based on your settings: {languages} language{languages > 1 ? 's' : ''}, ~{charsPerChunk} chars/chunk, ~{chunksPerMin} chunks/min
           </p>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -235,7 +233,6 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Link to docs */}
       <section className="text-center pb-16 space-y-4">
         <a
           href="https://docs.sarvam.ai/api-reference-docs/getting-started/pricing"
@@ -243,7 +240,7 @@ export default function PricingPage() {
           rel="noopener noreferrer"
           className="inline-flex px-5 py-2.5 rounded-full border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
         >
-          View Full Pricing on Sarvam Docs &rarr;
+          View Full Pricing on Sarvam Docs
         </a>
         <div>
           <Link

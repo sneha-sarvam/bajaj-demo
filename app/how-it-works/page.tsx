@@ -3,44 +3,102 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
+function MicIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+      <line x1="12" x2="12" y1="19" y2="22" />
+    </svg>
+  );
+}
+
+function WaveformIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 12h2l3-9 4 18 4-18 3 9h2" />
+    </svg>
+  );
+}
+
+function ZapIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+    </svg>
+  );
+}
+
+function FileTextIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="16" x2="8" y1="13" y2="13" />
+      <line x1="16" x2="8" y1="17" y2="17" />
+      <line x1="10" x2="8" y1="9" y2="9" />
+    </svg>
+  );
+}
+
+function GlobeIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="2" x2="22" y1="12" y2="12" />
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  );
+}
+
+function LayoutIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+      <line x1="3" x2="21" y1="9" y2="9" />
+      <line x1="9" x2="9" y1="21" y2="9" />
+    </svg>
+  );
+}
+
 const FLOW_STEPS = [
   {
-    icon: '🎙️',
+    Icon: MicIcon,
     title: 'Microphone Input',
     desc: 'Browser captures audio via getUserMedia with echo cancellation and noise suppression.',
     detail: 'channelCount: 1, sampleRate: 16kHz',
     color: '#4c6ef5',
   },
   {
-    icon: '🔊',
+    Icon: WaveformIcon,
     title: 'Audio Processing',
     desc: 'Raw audio is downsampled to 16kHz, converted to Int16 PCM, then Base64-encoded in 500ms chunks.',
     detail: 'ScriptProcessorNode, 500ms chunks',
     color: '#7c3aed',
   },
   {
-    icon: '⚡',
+    Icon: ZapIcon,
     title: 'Sarvam STT WebSocket',
     desc: 'Chunks stream over WebSocket to Sarvam saaras:v3 model in codemix mode for real-time transcription.',
     detail: 'wss://api.sarvam.ai/speech-to-text/ws',
     color: '#059669',
   },
   {
-    icon: '📝',
+    Icon: FileTextIcon,
     title: 'Live Transcript',
     desc: 'Each finalized transcript chunk is displayed instantly. Rolling window shows only the latest chunk.',
     detail: 'Codemix: English + native script',
     color: '#d97706',
   },
   {
-    icon: '🌐',
+    Icon: GlobeIcon,
     title: 'Sarvam Translate API',
     desc: 'Each transcript chunk is sent to the Translate API (mayura:v1) in parallel for all 11 Indian languages.',
     detail: 'POST /translate, Promise.allSettled',
     color: '#dc2626',
   },
   {
-    icon: '🗂️',
+    Icon: LayoutIcon,
     title: 'Translation Cards',
     desc: 'Translations appear as a grid of language cards. Latest batch on top, older batches fade out.',
     detail: 'Rolling window: 2 visible batches',
@@ -49,10 +107,10 @@ const FLOW_STEPS = [
 ];
 
 const TECH_STACK = [
-  { name: 'Next.js 15', desc: 'App Router, React Server Components', icon: '▲' },
-  { name: 'Sarvam AI', desc: 'STT (saaras:v3) + Translate (mayura:v1)', icon: '🧠' },
-  { name: 'Tailwind CSS', desc: 'Utility-first styling, responsive design', icon: '🎨' },
-  { name: 'Framer Motion', desc: 'Smooth animations for rolling batches', icon: '✨' },
+  { name: 'Next.js 15', desc: 'App Router, React Server Components' },
+  { name: 'Sarvam AI', desc: 'STT (saaras:v3) + Translate (mayura:v1)' },
+  { name: 'Tailwind CSS', desc: 'Utility-first styling, responsive design' },
+  { name: 'Framer Motion', desc: 'Smooth animations for rolling batches' },
 ];
 
 const API_DETAILS = [
@@ -103,9 +161,9 @@ const DESIGN_DECISIONS = [
 
 function Arrow() {
   return (
-    <div className="hidden md:flex items-center justify-center">
-      <svg width="32" height="16" viewBox="0 0 32 16" fill="none" className="text-gray-300">
-        <path d="M0 8H28M28 8L22 2M28 8L22 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <div className="hidden md:flex items-center justify-center px-1">
+      <svg width="28" height="12" viewBox="0 0 28 12" fill="none" className="text-gray-300">
+        <path d="M0 6H24M24 6L19 1M24 6L19 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </div>
   );
@@ -114,8 +172,8 @@ function Arrow() {
 function ArrowDown() {
   return (
     <div className="flex md:hidden items-center justify-center py-1">
-      <svg width="16" height="24" viewBox="0 0 16 24" fill="none" className="text-gray-300">
-        <path d="M8 0V20M8 20L2 14M8 20L14 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <svg width="12" height="20" viewBox="0 0 12 20" fill="none" className="text-gray-300">
+        <path d="M6 0V16M6 16L1 11M6 16L11 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </div>
   );
@@ -124,7 +182,6 @@ function ArrowDown() {
 export default function HowItWorksPage() {
   return (
     <div className="min-h-svh bg-[#fafbfc]">
-      {/* Hero */}
       <section className="max-w-5xl mx-auto px-6 pt-16 pb-12 text-center">
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
@@ -137,18 +194,17 @@ export default function HowItWorksPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-lg text-gray-500 max-w-2xl mx-auto"
+          className="text-base text-gray-500 max-w-2xl mx-auto leading-relaxed"
         >
           Real-time speech recognition with instant translation to 11 Indian languages,
           powered by Sarvam AI&apos;s streaming APIs.
         </motion.p>
       </section>
 
-      {/* Flow Diagram */}
+      {/* Pipeline */}
       <section className="max-w-6xl mx-auto px-6 pb-16">
-        <h2 className="text-xl font-semibold text-gray-900 mb-8 text-center">Pipeline</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-8 text-center">Pipeline</h2>
 
-        {/* Desktop: horizontal flow */}
         <div className="hidden md:flex items-stretch justify-center gap-0">
           {FLOW_STEPS.map((step, i) => (
             <div key={step.title} className="contents">
@@ -156,14 +212,19 @@ export default function HowItWorksPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
-                className="flex flex-col w-[160px] rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+                className="flex flex-col w-[156px] rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
               >
-                <div className="text-2xl mb-2">{step.icon}</div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-1">{step.title}</h3>
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center mb-3"
+                  style={{ backgroundColor: step.color + '14', color: step.color }}
+                >
+                  <step.Icon />
+                </div>
+                <h3 className="text-[13px] font-semibold text-gray-900 mb-1">{step.title}</h3>
                 <p className="text-xs text-gray-500 flex-1 leading-relaxed">{step.desc}</p>
                 <span
                   className="mt-3 text-[10px] font-mono px-2 py-1 rounded-md"
-                  style={{ backgroundColor: step.color + '12', color: step.color }}
+                  style={{ backgroundColor: step.color + '0a', color: step.color }}
                 >
                   {step.detail}
                 </span>
@@ -173,7 +234,6 @@ export default function HowItWorksPage() {
           ))}
         </div>
 
-        {/* Mobile: vertical flow */}
         <div className="flex md:hidden flex-col items-center gap-0">
           {FLOW_STEPS.map((step, i) => (
             <div key={step.title} className="contents">
@@ -184,13 +244,18 @@ export default function HowItWorksPage() {
                 className="w-full max-w-sm rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
               >
                 <div className="flex items-start gap-3">
-                  <div className="text-2xl">{step.icon}</div>
-                  <div className="flex-1">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-1">{step.title}</h3>
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: step.color + '14', color: step.color }}
+                  >
+                    <step.Icon />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-[13px] font-semibold text-gray-900 mb-1">{step.title}</h3>
                     <p className="text-xs text-gray-500 leading-relaxed">{step.desc}</p>
                     <span
                       className="inline-block mt-2 text-[10px] font-mono px-2 py-1 rounded-md"
-                      style={{ backgroundColor: step.color + '12', color: step.color }}
+                      style={{ backgroundColor: step.color + '0a', color: step.color }}
                     >
                       {step.detail}
                     </span>
@@ -205,7 +270,7 @@ export default function HowItWorksPage() {
 
       {/* Tech Stack */}
       <section className="max-w-5xl mx-auto px-6 pb-16">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">Tech Stack</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-6 text-center">Tech Stack</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {TECH_STACK.map((tech, i) => (
             <motion.div
@@ -215,9 +280,8 @@ export default function HowItWorksPage() {
               transition={{ delay: 0.3 + i * 0.05 }}
               className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm text-center"
             >
-              <div className="text-2xl mb-2">{tech.icon}</div>
               <h3 className="text-sm font-semibold text-gray-900">{tech.name}</h3>
-              <p className="text-xs text-gray-500 mt-1">{tech.desc}</p>
+              <p className="text-xs text-gray-500 mt-1.5">{tech.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -225,7 +289,7 @@ export default function HowItWorksPage() {
 
       {/* API Details */}
       <section className="max-w-5xl mx-auto px-6 pb-16">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">API Configuration</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-6 text-center">API Configuration</h2>
         <div className="grid md:grid-cols-2 gap-6">
           {API_DETAILS.map((api) => (
             <div key={api.title} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -260,7 +324,7 @@ export default function HowItWorksPage() {
 
       {/* Design Decisions */}
       <section className="max-w-5xl mx-auto px-6 pb-20">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">Key Design Decisions</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-6 text-center">Key Design Decisions</h2>
         <div className="grid md:grid-cols-2 gap-4">
           {DESIGN_DECISIONS.map((d, i) => (
             <motion.div
@@ -277,7 +341,6 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="text-center pb-16">
         <Link
           href="/"
