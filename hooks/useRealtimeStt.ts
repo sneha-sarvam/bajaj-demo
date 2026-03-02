@@ -109,34 +109,41 @@ export function useRealtimeStt(): UseRealtimeSttReturn {
         throw new Error('Audio processing not supported in this browser.');
       }
 
+      const trimmedKey = SARVAM_API_KEY.trim();
+      if (!trimmedKey) {
+        throw new Error('API key is missing. Check NEXT_PUBLIC_SARVAM_API_KEY.');
+      }
+
       const params = new URLSearchParams({
         'language-code': 'unknown',
         'model': 'saaras:v3',
         'mode': 'transcribe',
         'vad_signals': 'true',
+        'api-subscription-key': trimmedKey,
       });
       const wsUrl = `${SARVAM_WS_URL}?${params.toString()}`;
 
-      const trimmedKey = SARVAM_API_KEY.trim();
-      const subprotocol = trimmedKey ? [`api-subscription-key.${trimmedKey}`] : undefined;
+      console.log('[STT] Connecting to:', wsUrl.replace(trimmedKey, '***'));
 
-      const ws = new WebSocket(wsUrl, subprotocol);
+      const ws = new WebSocket(wsUrl, [`api-subscription-key.${trimmedKey}`]);
 
       await new Promise<void>((resolve, reject) => {
         const timeout = setTimeout(() => {
           if (ws.readyState !== WebSocket.OPEN) {
             ws.close();
-            reject(new Error('WebSocket connection timed out'));
+            reject(new Error('WebSocket connection timed out (10s)'));
           }
         }, 10000);
 
         ws.onopen = () => {
           clearTimeout(timeout);
+          console.log('[STT] WebSocket connected');
           resolve();
         };
 
-        ws.onerror = () => {
+        ws.onerror = (ev) => {
           clearTimeout(timeout);
+          console.error('[STT] WebSocket error:', ev);
           reject(new Error('WebSocket connection failed'));
         };
       });

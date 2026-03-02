@@ -1,6 +1,6 @@
 export const SARVAM_API_KEY = process.env.NEXT_PUBLIC_SARVAM_API_KEY || 'sk_gcz3ecmo_o0gyEPotdxmxv00hQIKedgaX';
 export const SARVAM_API_BASE = 'https://api.sarvam.ai';
-export const SARVAM_WS_URL = 'wss://api.sarvam.ai/v1/speech-to-text/stream';
+export const SARVAM_WS_URL = 'wss://api.sarvam.ai/speech-to-text/ws';
 
 export const TARGET_SAMPLE_RATE = 16000;
 export const CHUNK_DURATION = 0.5; // 500ms
