@@ -1,4 +1,4 @@
-export const SARVAM_API_KEY = process.env.NEXT_PUBLIC_SARVAM_API_KEY || '';
+export const SARVAM_API_KEY = process.env.NEXT_PUBLIC_SARVAM_API_KEY || 'sk_gcz3ecmo_o0gyEPotdxmxv00hQIKedgaX';
 export const SARVAM_API_BASE = 'https://api.sarvam.ai';
 export const SARVAM_WS_BASE = 'wss://api.sarvam.ai';
 
