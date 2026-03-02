@@ -117,7 +117,7 @@ export function useRealtimeStt(): UseRealtimeSttReturn {
       const params = new URLSearchParams({
         'language-code': 'unknown',
         'model': 'saaras:v3',
-        'mode': 'transcribe',
+        'mode': 'codemix',
         'vad_signals': 'true',
         'api-subscription-key': trimmedKey,
       });

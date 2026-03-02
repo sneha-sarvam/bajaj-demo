@@ -247,28 +247,21 @@ export default function Home() {
 
   return (
     <div className="min-h-svh flex flex-col bg-[#fafbfc]">
-      {/* Header */}
-      <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-semibold text-gray-900">Speech to Text + Translate</h1>
-            <p className="text-sm text-gray-500">Real-time STT with live translation to all Indian languages</p>
-          </div>
-          <div className="flex items-center gap-2">
-            {detectedLanguage && (
-              <span className="text-xs px-3 py-1.5 bg-[#f0f4ff] text-[#4263eb] rounded-full font-medium">
-                {LANGUAGES.find((l) => l.code === detectedLanguage)?.name || detectedLanguage}
-              </span>
-            )}
-            {isRecording && (
-              <span className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-red-50 text-red-600 rounded-full font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                Live
-              </span>
-            )}
-          </div>
-        </div>
-      </header>
+      {/* Status pills */}
+      <div className="flex items-center justify-center gap-2 px-6 py-3">
+        <p className="text-sm text-gray-500">Real-time STT with live translation to all Indian languages</p>
+        {detectedLanguage && (
+          <span className="text-xs px-3 py-1.5 bg-[#f0f4ff] text-[#4263eb] rounded-full font-medium">
+            {LANGUAGES.find((l) => l.code === detectedLanguage)?.name || detectedLanguage}
+          </span>
+        )}
+        {isRecording && (
+          <span className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-red-50 text-red-600 rounded-full font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+            Live
+          </span>
+        )}
+      </div>
 
       {/* Main content */}
       <main className="flex-1 flex flex-col">
