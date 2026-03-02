@@ -390,11 +390,11 @@ export default function Home() {
                 <h2 className="text-lg font-semibold text-gray-900">Live Translations</h2>
 
                 <AnimatePresence mode="popLayout">
-                  {visibleBatches.map((batch, i) => (
+                  {[...visibleBatches].reverse().map((batch, i) => (
                     <BatchCard
                       key={batch.id}
                       batch={batch}
-                      isFading={i < visibleBatches.length - 1 && visibleBatches.length >= MAX_VISIBLE_BATCHES}
+                      isFading={i > 0 && visibleBatches.length >= MAX_VISIBLE_BATCHES}
                     />
                   ))}
                 </AnimatePresence>
